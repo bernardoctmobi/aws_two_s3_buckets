@@ -35,32 +35,47 @@ Resources:
           Properties:
             Bucket: !Ref InputBucket
             Events: s3:ObjectCreated:*
-  
-  ReadWriteRole:
-    Type: AWS::IAM::Role
+
+  ReadInputBucketPolicy:
+    Type: AWS::IAM::Policy
     Properties:
-      AssumeRolePolicyDocument:
+      PolicyName: ReadInputBucketPolicy
+      PolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: ReadBucketPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                Resource: !GetAtt InputBucket.Arn
+            Action:
+              - s3:GetObject
+            Resource:
+              - !GetAtt InputBucket.Arn
+      Roles:
+        - !Ref InputProcessor
+  
+  # ReadWriteRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: lambda.amazonaws.com
+  #           Action: sts:AssumeRole
+  #     Policies:
+  #       - PolicyName: ReadBucketPolicy
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - s3:GetObject
+  #               Resource: !GetAtt InputBucket.Arn
                 
-        - PolicyName: WriteBucketPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:PutObject
-                Resource: !GetAtt OutputBucket.Arn
+  #       - PolicyName: WriteBucketPolicy
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - s3:PutObject
+  #               Resource: !GetAtt OutputBucket.Arn

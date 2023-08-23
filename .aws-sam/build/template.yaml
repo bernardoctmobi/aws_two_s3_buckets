@@ -33,36 +33,19 @@ Resources:
             Events: s3:ObjectCreated:*
     Metadata:
       SamResourceId: InputProcessor
-  ReadWriteRole:
-    Type: AWS::IAM::Role
+  ReadInputBucketPolicy:
+    Type: AWS::IAM::Policy
     Properties:
-      AssumeRolePolicyDocument:
+      PolicyName: ReadInputBucketPolicy
+      PolicyDocument:
         Version: '2012-10-17'
         Statement:
         - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
-      Policies:
-      - PolicyName: ReadBucketPolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - s3:GetObject
-            Resource:
-              Fn::GetAtt:
-              - InputBucket
-              - Arn
-      - PolicyName: WriteBucketPolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - s3:PutObject
-            Resource:
-              Fn::GetAtt:
-              - OutputBucket
-              - Arn
+          Action:
+          - s3:GetObject
+          Resource:
+          - Fn::GetAtt:
+            - InputBucket
+            - Arn
+      Roles:
+      - Ref: InputProcessor

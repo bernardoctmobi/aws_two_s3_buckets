@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  InputBucketName:
+    Type: String
+    Default: InputBucket
+
+Resources:
+  InputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Ref: InputBucketName
+       
+  InputProcessor:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.handler
+      Runtime: nodejs18.x
+      Events:
+        FileUploadedToInputBucket:
+          Type: S3
+          Properties:
+            Bucket: !Ref InputBucket
+            Events: s3:ObjectCreated:*

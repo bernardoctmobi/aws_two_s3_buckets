@@ -4,6 +4,9 @@ Globals:
   Function:
     Timeout: 3
 Parameters:
+  StackName:
+    Type: String
+    Default: S3Buckets
   InputBucketName:
     Type: String
     Default: InputBucket
@@ -13,14 +16,8 @@ Parameters:
 Resources:
   InputBucket:
     Type: AWS::S3::Bucket
-    Properties:
-      BucketName:
-        Ref: InputBucketName
   OutputBucket:
     Type: AWS::S3::Bucket
-    Properties:
-      BucketName:
-        Ref: OutputBucketName
   InputProcessor:
     Type: AWS::Serverless::Function
     Properties:
@@ -46,26 +43,26 @@ Resources:
           Principal:
             Service: lambda.amazonaws.com
           Action: sts:AssumeRole
-    Policies:
-    - PolicyName: ReadBucketPolicy
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action:
-          - s3:GetObject
-          Resource:
-            Fn::GetAtt:
-            - InputBucket
-            - Arn
-    - PolicyName: WriteBucketPolicy
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action:
-          - s3:PutObject
-          Resource:
-            Fn::GetAtt:
-            - OutputBucket
-            - Arn
+      Policies:
+      - PolicyName: ReadBucketPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:GetObject
+            Resource:
+              Fn::GetAtt:
+              - InputBucket
+              - Arn
+      - PolicyName: WriteBucketPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:PutObject
+            Resource:
+              Fn::GetAtt:
+              - OutputBucket
+              - Arn

@@ -47,9 +47,9 @@ Resources:
             Action:
               - s3:GetObject
             Resource:
-              - !GetAtt InputBucket.Arn
+              - !Sub '${InputBucket.Arn}/*'
       Roles:
-        - !Ref InputProcessor
+        - !Ref InputProcessorRole
   
   # ReadWriteRole:
   #   Type: AWS::IAM::Role

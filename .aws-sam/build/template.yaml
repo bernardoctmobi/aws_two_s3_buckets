@@ -44,8 +44,6 @@ Resources:
           Action:
           - s3:GetObject
           Resource:
-          - Fn::GetAtt:
-            - InputBucket
-            - Arn
+          - Fn::Sub: ${InputBucket.Arn}/*
       Roles:
-      - Ref: InputProcessor
+      - Ref: InputProcessorRole

@@ -29,6 +29,9 @@ Resources:
       CodeUri: src/
       Handler: app.handler
       Runtime: nodejs18.x
+      Environment:
+        Variables:
+          DESTINATION_BUCKET: sam-app-outputbucket-j9iazds0obxi
       Events:
         FileUploadedToInputBucket:
           Type: S3

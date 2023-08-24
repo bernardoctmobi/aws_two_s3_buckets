@@ -12,8 +12,11 @@ export const handler = async (event) => {
     console.log(uploadInfo);
     const data = await retrieveData(uploadInfo.bucket.name, uploadInfo.object.key);
     console.log(data);
-    const result = await uploadFilteredData(data, uploadInfo.object.key);
-    return result;
+    if (data) {
+        const result = await uploadFilteredData(data, uploadInfo.object.key);
+        return result;
+    }
+    return false;
 }
 
 async function retrieveData(bucket, key) {
@@ -60,7 +63,8 @@ async function retrieveData(bucket, key) {
 
 async function uploadFilteredData(dataString, key) {
     const buffer = Buffer.from(dataString, 'utf-8');
-    const destinationBucket = 'sam-app-outputbucket-j9iazds0obxi'//fare variabile d'ambiente
+    const destinationBucket = process.env.DESTINATION_BUCKET;
+    console.log(destinationBucket);
     const newObjectKey = `filtered${key}`;
     const uploadParams = {
         Bucket: destinationBucket,

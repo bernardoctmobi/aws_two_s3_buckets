@@ -12,62 +12,11 @@ export const handler = async (event) => {
     console.log(uploadInfo);
     const data = await retrieveData(uploadInfo.bucket.name, uploadInfo.object.key);
     console.log(data);
-    const result = await uploadFilteredData(data, uploadInfo.object.key);
-    return result;
-
-    // const params = {
-    //     "Bucket": uploadInfo.bucket.name,
-    //     "Key": uploadInfo.object.key
-    // };
-    // const params = {
-    //     Bucket: uploadInfo.bucket.name,
-    //     Key: uploadInfo.object.key,
-    //     Expression: "SELECT Nome FROM S3Object",
-    //     ExpressionType: "SQL",
-    //     InputSerialization: {
-    //         CSV: {
-    //             FileHeaderInfo: 'USE',
-    //         },
-    //         CompressionType: 'NONE',
-    //     },
-    //     OutputSerialization: {
-    //         CSV: {
-    //             RecordDelimiter: '\n',
-    //             FieldDelimiter: ','
-    //         }
-    //     }
-    // };
-    // console.log(params);
-    // let dataChunks = [];
-    // const textDecoder = new TextDecoder();
-
-    // const command = new GetObjectCommand(params);
-    // const response = await client.send(command);
-    // const stream = response.Body;
-    // let fileContent = '';
-    // stream.on('data', (chunk) => {
-    //     fileContent += chunk.toString('utf-8');
-    // });
-    // stream.on('end', () => {
-    //     console.log("File content: ", fileContent);
-    // });
-
-    // try {
-    //     const command = new SelectObjectContentCommand(params);
-    //     const response = await client.send(command);
-    //     console.log(response);
-
-    //     for await (const eventChunk of response.Payload) {
-    //         if (eventChunk.Records) {
-    //             const chunkData = textDecoder.decode(eventChunk.Records.Payload);
-    //             dataChunks.push(chunkData);
-    //         }
-    //     }
-    //     const selectedNames = dataChunks.join("");
-    //     console.log(selectedNames);
-    // } catch (error) {
-    //     console.error("Error: ", error);
-    // }
+    if (data) {
+        const result = await uploadFilteredData(data, uploadInfo.object.key);
+        return result;
+    }
+    return false;
 }
 
 async function retrieveData(bucket, key) {
@@ -114,7 +63,9 @@ async function retrieveData(bucket, key) {
 
 async function uploadFilteredData(dataString, key) {
     const buffer = Buffer.from(dataString, 'utf-8');
-    const destinationBucket = 'sam-app-outputbucket-j9iazds0obxi'//fare variabile d'ambiente
+    //const destinationBucket = 'sam-app-outputbucket-j9iazds0obxi'//fare variabile d'ambiente
+    const destinationBucket = process.env.DESTINATION_BUCKET;
+    console.log(destinationBucket);
     const newObjectKey = `filtered${key}`;
     const uploadParams = {
         Bucket: destinationBucket,

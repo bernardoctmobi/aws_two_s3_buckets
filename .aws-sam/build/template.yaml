@@ -47,3 +47,17 @@ Resources:
           - Fn::Sub: ${InputBucket.Arn}/*
       Roles:
       - Ref: InputProcessorRole
+  WriteOutputBucketPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: WriteOutputBucketPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:PutObject
+          Resource:
+          - Fn::Sub: ${OutputBucket.Arn}/*
+      Roles:
+      - Ref: InputProcessorRole

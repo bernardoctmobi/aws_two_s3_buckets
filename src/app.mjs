@@ -9,9 +9,7 @@ const client = new S3Client({});
 
 export const handler = async (event) => {
     const uploadInfo = event.Records[0].s3;
-    console.log(uploadInfo);
     const data = await retrieveData(uploadInfo.bucket.name, uploadInfo.object.key);
-    console.log(data);
     if (data) {
         const result = await uploadFilteredData(data, uploadInfo.object.key);
         return result;
@@ -44,7 +42,6 @@ async function retrieveData(bucket, key) {
     try {
         const command = new SelectObjectContentCommand(params);
         const response = await client.send(command);
-        console.log(response);
 
         for await (const eventChunk of response.Payload) {
             if (eventChunk.Records) {
@@ -64,7 +61,6 @@ async function retrieveData(bucket, key) {
 async function uploadFilteredData(dataString, key) {
     const buffer = Buffer.from(dataString, 'utf-8');
     const destinationBucket = process.env.DESTINATION_BUCKET;
-    console.log(destinationBucket);
     const newObjectKey = `filtered${key}`;
     const uploadParams = {
         Bucket: destinationBucket,

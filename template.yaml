@@ -6,9 +6,6 @@ Globals:
     Timeout: 3
 
 Parameters:
-  StackName:
-    Type: String
-    Default: S3Buckets
   InputBucketName:
     Type: String
     Default: InputBucket
